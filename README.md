@@ -10,7 +10,7 @@ Currently implemented examples (the name is used to substitute `<example>` - see
 - custom-rating-csv: Write a custom DataFrame to two different CSV files. Then read both CSV files in a CustomSparkAction with aggregation logic.
 
 ## Run with Maven
-1. Set the following environment variable: `HADOOP_HOME=/path/to/hadoop` (see https://github.com/pgruetter/smart-data-lake-dev).
+1. Set the following environment variable: `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake).
 1. Build the io.smartdatalake:smartdatalake (the main project): `mvn -DskipTests clean install`
 1. Change to the examples project (io.smartdatalake:sdl-examples).
 1. Execute all examples: `mvn clean verify`
@@ -31,4 +31,4 @@ Note: To execute a single example:
     - Program arguments: `--feed-sel <regex-feedname-selector> --name <any-application-name>`
     - Working directory: `/path/to/sdl-examples/target`
     - Environment variables: 
-        - `HADOOP_HOME=/path/to/hadoop` (see https://github.com/pgruetter/smart-data-lake-dev)
+        - `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake)
