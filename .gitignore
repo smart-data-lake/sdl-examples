@@ -1,0 +1,9 @@
+metastore_db
+data/output
+.cache-*
+target
+/.externalToolBuilders/
+derby.log
+.idea
+*.iml
+*.log

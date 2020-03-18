@@ -17,7 +17,7 @@ Currently implemented examples (the name is used to substitute `<example>` - see
 
 Note: To execute a single example: 
 ```
- mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.workflow.DefaultConfigurableApp --feed-sel <regex-pattern> --name <app-name>" -Dexec.workingdir="target"
+ mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.workflow.DefaultSmartDataLakeBuilder --feed-sel <regex-pattern> --name <app-name>" -Dexec.workingdir="target"
 ```
 (requires Maven 3.3.1 or later)
 
@@ -27,7 +27,7 @@ Note: To execute a single example:
 
     It contains the `application.conf` configuration file that defines the example feeds.
 1. Configure and run the following run configuration in IntelliJ IDEA:
-    - Main class: `io.smartdatalake.app.workflow.DefaultConfigurableApp`
+    - Main class: `io.smartdatalake.app.workflow.DefaultSmartDataLakeBuilder`
     - Program arguments: `--feed-sel <regex-feedname-selector> --name <any-application-name>`
     - Working directory: `/path/to/sdl-examples/target`
     - Environment variables: 

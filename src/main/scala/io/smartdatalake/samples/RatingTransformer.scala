@@ -1,0 +1,18 @@
+package io.smartdatalake.samples
+
+import io.smartdatalake.workflow.action.customlogic.CustomDfsTransformer
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.functions.sum
+
+class RatingTransformer extends CustomDfsTransformer {
+  override def transform(session: SparkSession, options: Map[String, String], dfs: Map[String,DataFrame]): Map[String,DataFrame] = {
+    import session.implicits._
+    val df_transformed = dfs("custom-rating-csv1")
+      .union(dfs("custom-rating-csv2"))
+      .groupBy($"lastname",$"firstname")
+      .agg(sum($"rating").as("rating"))
+      .coalesce(1)
+
+    Map("custom-rating-csv-agg" -> df_transformed)
+  }
+}
