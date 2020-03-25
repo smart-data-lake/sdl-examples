@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="LocalSmartDataLakeBuilder" type="Application" factoryName="Application" nameIsGenerated="true">
-    <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.LocalSmartDataLakeBuilder" />
-    <module name="smartdatalake-examples" />
+  <configuration default="false" name="DefaultSmartDataLakeBuilder" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.DefaultSmartDataLakeBuilder" />
+    <module name="sdl-examples" />
     <option name="PROGRAM_PARAMETERS" value="-n test -f .* -c $ProjectFileDir$/src/main/resources" />
     <option name="WORKING_DIRECTORY" value="target" />
     <method v="2">
