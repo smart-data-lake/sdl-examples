@@ -115,8 +115,8 @@
 								<argument>io.smartdatalake.app.DefaultSmartDataLakeBuilder</argument>
 								<argument>--feed-sel</argument>
 								<argument>.*</argument>
-								<argument>--name</argument>
-								<argument>test</argument>
+								<argument>--config</argument>
+								<argument>${project.build.directory}</argument>
 							</arguments>
 						</configuration>
 					</execution>

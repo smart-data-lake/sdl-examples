@@ -2,7 +2,7 @@
   <configuration default="false" name="DefaultSmartDataLakeBuilder" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.DefaultSmartDataLakeBuilder" />
     <module name="sdl-examples" />
-    <option name="PROGRAM_PARAMETERS" value="-n test -f .* -c $ProjectFileDir$/src/main/resources" />
+    <option name="PROGRAM_PARAMETERS" value="-f .* -c $ProjectFileDir$/src/main/resources" />
     <option name="WORKING_DIRECTORY" value="target" />
     <method v="2">
       <option name="Make" enabled="true" />
