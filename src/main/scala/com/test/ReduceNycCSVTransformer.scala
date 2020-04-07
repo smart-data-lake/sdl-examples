@@ -1,4 +1,4 @@
-package io.smartdatalake.samples
+package com.test
 
 import io.smartdatalake.workflow.action.customlogic.CustomDfTransformer
 import org.apache.spark.sql.{DataFrame, SparkSession}
