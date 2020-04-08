@@ -1,13 +1,17 @@
 # Smart Data Lake Examples
 
 ## Examples
-Currently implemented examples (the name is used to substitute `<example>` - see below)
+Currently implemented example feeds (the name is used to substitute `<example>` - see below) in `samples.conf`:
 - custom-my-df2csv: Write a custom DataFrame to CSV
 - ab-csv: Read file from CSV and write contents to CSV.
 - ab-parquet-hive: Read file from CSV, write contents to Parquet, then write contents to Hive in a second Action.
 - ab-excel: Read file from CSV and write contents to Excel file.
 - ab-jdbc: Read file from CSV, reduce columns with custom transformation and write contents to JDBC. In a second Action read data from JDBC and write it back to CSV.
 - custom-rating-csv: Write a custom DataFrame to two different CSV files. Then read both CSV files in a CustomSparkAction with aggregation logic.
+
+The following reporting feeds which work with the metadata of the example feeds in `reporting.conf`:
+- export-metadata: Writes metadata of DataObjects and Actions to CSV
+- check-constraints: Writes PK violations for tables with primary key defined to CSV
 
 ## Run with Maven
 1. Set the following environment variable: `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake).
@@ -25,10 +29,11 @@ Note: To execute a single example:
 ## Run Example (IntelliJ on Windows)
 1. Ensure, that the directory `src/main/resources` is configured as a resource directory in IntelliJ (File - Project Structure - Modules). 
 
-    It contains the `application.conf` configuration file that defines the example feeds.
+   It contains the `global.conf`, `samples.conf` and `reports.conf` configuration files that defines the example feeds.
+    
 1. Configure and run the following run configuration in IntelliJ IDEA:
     - Main class: `io.smartdatalake.app.workflow.DefaultSmartDataLakeBuilder`
-    - Program arguments: `--feed-sel <regex-feedname-selector> --name <any-application-name>`
+    - Program arguments: `--feed-sel <regex-feedname-selector> --config $ProjectFileDir$/src/main/resources`
     - Working directory: `/path/to/sdl-examples/target`
     - Environment variables: 
         - `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake)
