@@ -1,8 +1,8 @@
-package io.smartdatalake.samples
+package com.sample
 
 import io.smartdatalake.workflow.action.customlogic.CustomDfsTransformer
-import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions.sum
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 class RatingTransformer extends CustomDfsTransformer {
   override def transform(session: SparkSession, options: Map[String, String], dfs: Map[String,DataFrame]): Map[String,DataFrame] = {

@@ -37,3 +37,6 @@ Note: To execute a single example:
     - Working directory: `/path/to/sdl-examples/target`
     - Environment variables: 
         - `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake)
+
+## Programmatic Access to Data Objects (e.g. Notebooks)
+To programmatically access DataObjects for testing the config or interactive exploration in Notebooks, see [ProgrammaticAccessDemo](src/main/scala/com/test/ProgrammaticAccessDemo)

@@ -1,4 +1,4 @@
-package io.smartdatalake.samples
+package com.sample
 
 import io.smartdatalake.workflow.action.customlogic.CustomDfCreator
 import org.apache.spark.sql.{DataFrame, SparkSession}
