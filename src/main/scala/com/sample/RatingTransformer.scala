@@ -1,4 +1,4 @@
-package com.test
+package com.sample
 
 import io.smartdatalake.workflow.action.customlogic.CustomDfsTransformer
 import org.apache.spark.sql.functions.sum

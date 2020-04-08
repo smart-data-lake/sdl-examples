@@ -1,11 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProgrammaticAccessDemo" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.test.ProgrammaticAccessDemo" />
+    <option name="MAIN_CLASS_NAME" value="com.sample.ProgrammaticAccessDemo" />
     <module name="sdl-examples" />
     <option name="WORKING_DIRECTORY" value="target" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.test.*" />
+        <option name="PATTERN" value="com.sample.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

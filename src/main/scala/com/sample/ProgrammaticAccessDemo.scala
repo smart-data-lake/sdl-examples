@@ -1,4 +1,4 @@
-package com.test
+package com.sample
 
 import io.smartdatalake.config.ConfigToolbox
 import io.smartdatalake.workflow.dataobject.CsvFileDataObject
