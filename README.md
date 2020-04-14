@@ -40,3 +40,10 @@ Note: To execute a single example:
 
 ## Programmatic Access to Data Objects (e.g. Notebooks)
 To programmatically access DataObjects for testing the config or interactive exploration in Notebooks, see [ProgrammaticAccessDemo](src/main/scala/com/test/ProgrammaticAccessDemo)
+
+## Lineage Visualization
+- download & install npm: [get-npm](https://www.npmjs.com/get-npm)
+- install npm package "http-server": `npm install http-server -g`
+- Execute all examples: `mvn clean verify`
+  (some of them are exporting the metadata csv-files which are input for the lineage graph) 
+- change to project dir and start "http-server": `npx http-server -c-1 -o src/main/resources/viz/lineage.html`
