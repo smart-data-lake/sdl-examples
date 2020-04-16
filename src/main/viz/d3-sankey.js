@@ -185,7 +185,7 @@ function Sankey() {
     }
   }
 
-  /** replaced with function respecting defined data layers and processes unconnected subgraphs separately **/
+  /** CHANGE: replaced with function respecting defined data layers and processes unconnected subgraphs separately **/
   /*
   function computeNodeDepths({nodes}) {
     const n = nodes.length;
@@ -282,14 +282,6 @@ function Sankey() {
       if (!n.subgraph) labelSubgraphNode(n, nodesToProcess, neighborMap, subgraph);
     });
   }
-  function labelSubgraphNode(node, nodesToProcess, neighborMap, subgraph) {
-    node.subgraph = subgraph;
-    nodesToProcess.delete(node);
-    var neighbors = neighborMap[node.name];
-    neighbors.forEach( function(n) {
-      if (!n.subgraph) labelSubgraphNode(n, nodesToProcess, neighborMap, subgraph);
-    });
-  }
   function computeNodeDepths({nodes, links}) {
     // label independent subgraphs
     // dependency on layer is used as pseudo link
@@ -314,7 +306,7 @@ function Sankey() {
     // add dummy nodes & links
     Array.prototype.push.apply(nodes, dummyNodes);
     Array.prototype.push.apply(links, dummyLinks);
-    // calculate min/max end depth for each node
+    // calculate min/max end depth for each node, this is needed for ordering nodes
     // start with end nodes and propagate end depth through graph in reverse direction
     function updateMinMaxEndDepth(node, minEndDepth, maxEndDepth, nextLayerPrio) {
       node.minEndDepth = Math.min(node.minEndDepth ?? minEndDepth, minEndDepth);
@@ -322,9 +314,46 @@ function Sankey() {
       node.nextLayerPrio = node.layerDef ? node.layerDef.prio ?? nextLayerPrio : nextLayerPrio;
       node.targetLinks.forEach(l => updateMinMaxEndDepth(l.source, node.minEndDepth, node.maxEndDepth, node.nextLayerPrio));
     }
-    var testNodes = nodes.filter(n => !n.sourceLinks.length);
-    testNodes.forEach(n => updateMinMaxEndDepth(n, n.depth, n.depth, n.layerDef ? n.layerDef.prio : undefined));
-    console.log("depth", nodes);
+    nodes.filter(n => !n.sourceLinks.length).forEach(n => updateMinMaxEndDepth(n, n.depth, n.depth, n.layerDef ? n.layerDef.prio : undefined));
+    // precalculate node order per depth
+    // it must be done by starting with the first depth, as we want to access node order of previous depth
+    function nodeSorter(n1, n2) {
+      function getPrevCommonDepth(n1, n2) {
+        var prevDepth = n1.depth -1
+        while(prevDepth>=0 && !(n1.minDepthPosMap[prevDepth]>=0 && n2.minDepthPosMap[prevDepth]>=0)) prevDepth--;
+        return prevDepth;
+      }
+      var sorter = n1.subgraph - n2.subgraph; // smaller subgraph first
+      if (sorter == 0 && n1.nextLayerPrio && n2.nextLayerPrio) sorter = n1.nextLayerPrio - n2.nextLayerPrio; // smaller prio first
+      if (sorter == 0) sorter = n2.maxEndDepth - n1.maxEndDepth; // larger end depth first
+      if (sorter == 0) sorter = n2.minEndDepth - n1.minEndDepth; // larger end depth first
+      if (sorter == 0) {
+        var prevCommonDepth = getPrevCommonDepth(n1,n2)
+        if (prevCommonDepth>=0) {
+          sorter = n1.minDepthPosMap[prevCommonDepth] - n2.minDepthPosMap[prevCommonDepth];  // smaller pos first
+        }
+      }
+      if (sorter == 0) sorter = n2.name < n1.name ? 1 : -1;
+      return sorter;
+    }
+    function mergeMin(v1,v2) {
+      return v1 && v2 ? Math.min(v1,v2) : v1 ?? v2
+    }
+    function collectMinPrevDepthPos(n) {
+      // init minDepthPosMap and merge with previous layers
+      n.minDepthPosMap = new Map();
+      n.targetLinks.map(l => l.source.minDepthPosMap).reduce((agg, next) => _.mergeWith(agg, next, mergeMin), n.minDepthPosMap);
+    }
+    function assignDepthPos(n, idx) {
+      // assign this depthPos
+      n.depthPos = idx;
+      n.minDepthPosMap[n.depth] = n.depthPos;
+    }
+    var nodesPerDepth = _.sortBy(_.toPairs(_.groupBy(nodes, n => n.depth)), l => l[0])
+    nodesPerDepth.forEach( function (l) {
+      l[1].forEach(collectMinPrevDepthPos);
+      l[1].sort(nodeSorter).forEach(assignDepthPos);
+    })
   }
 
   function computeNodeHeights({nodes}) {

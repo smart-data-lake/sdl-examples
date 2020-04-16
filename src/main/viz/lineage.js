@@ -71,12 +71,18 @@ createLineage(nodes,edges,layers)
 */
 
 function createLineage(nodes, edges, layers) {
-  // add layer config to nodes
-  nodes.forEach( function(n) {
-    if (n.layerName && layers[n.layerName]) n.layerDef = layers[n.layerName];
+  // add missing layers with default values
+  var layersByName = new Map(layers.map( l => [l.name, l]));
+  nodes.filter(n => n.layerName).forEach( function(n) {
+    if (!layersByName.has(n.layerName)) {
+      layersByName.set(n.layerName, {name: n.layerName, color: "#888", prio: 999});
+      layers.push(layersByName.get(n.layerName));
+    }
   });
-  // add missing nodes
-  const nodeByName = new Map(nodes.map( n => [n.name, n]));
+  // add layer config to nodes
+  nodes.filter(n => n.layerName).forEach( n => n.layerDef = layersByName.get(n.layerName));
+  // add missing nodes with default values
+  var nodeByName = new Map(nodes.map( n => [n.name, n]));
   edges.forEach( edge => {
     if (!nodeByName.has(edge.source)) nodeByName.set(edge.source, {name: edge.source});
     if (!nodeByName.has(edge.target)) nodeByName.set(edge.target, {name: edge.target});
@@ -88,12 +94,7 @@ function createLineage(nodes, edges, layers) {
 
   // init sankey generator
   function nodeSorter(n1, n2) {
-    var sorter = n1.subgraph - n2.subgraph; // smaller subgraph first
-    if (sorter == 0) sorter = n1.nextLayerPrio - n2.nextLayerPrio; // smaller prio first
-    if (sorter == 0) sorter = n2.maxEndDepth - n1.maxEndDepth; // larger end depth first
-    if (sorter == 0) sorter = n2.minEndDepth - n1.minEndDepth; // larger end depth first
-    // TODO: position of node on previous layer could be interesting to refine order on this layer...
-    return sorter;
+    return n1.depthPos - n2.depthPos; // smaller pos first
   }
   var sankey = Sankey()
     .nodeId(d => d.name)
@@ -125,7 +126,7 @@ function createLineage(nodes, edges, layers) {
       .attr("width", d => d.x1 - d.x0)
       .attr("opacity", d => d.dummy ? 0.5 : null)
       .attr("fill", d => d.dummy ? "#aaa" :
-                         d.layerName ? layers[d.layerName].color : "#666")
+                         d.layerName ? d.layerDef.color : "#666")
       //.style("stroke", d => d.layerName ? "#000" : null);
   node.filter(d => !d.dummy).append("title")
       .text(d => `${d.name}\n${d3.format(",.0f")(d.value)}`);
@@ -169,23 +170,33 @@ function createLineage(nodes, edges, layers) {
       .text(d => `${d.source.name} → ${d.target.name}\n${d3.format(",.0f")(d.value)}`);
 
   // layer box
-  var nodesByLayer = _.groupBy(data.nodes.filter( n => n.layerName), n => n.layerName)
-  var layerBoxDef = _.toPairs(nodesByLayer).map(([name,nodes]) => ({name, x0: d3.min(nodes.map(n => n.x0))-margin, x1: d3.max(nodes.map(n => n.x1))+margin}));
+  // calc layer box boundaries
+  function updateLayerBoxDef() {
+    var nodesByLayer = _.groupBy(data.nodes.filter( n => n.layerName), n => n.layerName)
+    layers.forEach(function (l) {
+      var nodes = nodesByLayer[l.name];
+      l.x0 = d3.min(nodes, n => n.x0)-margin;
+      l.x1 = d3.max(nodes, n => n.x1)+margin;
+      l.y0 = d3.min(nodes, n => n.y0)-2*margin;
+      l.y1 = d3.max(nodes, n => n.y1)+margin;
+    });
+  }
+  updateLayerBoxDef();
   var layerBoxPlane = sankeyChart
     .append("g")
   var layerBox = layerBoxPlane
     .selectAll(".layerBox")
-    .data(layerBoxDef)
+    .data(layers)
     .join("g")
       .attr("class", "node")
-      .attr("transform", d => "translate(" + d.x0 + "," + -2*margin + ")")
+      .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")")
       .attr("font-family", "arial")
       .attr("font-size", 10);
-  layerBox.append("rect")
-      .attr("height", viewHeight)
+  var layerBoxRect = layerBox.append("rect")
+      .attr("height", d => d.y1 - d.y0)
       .attr("width", d => d.x1 - d.x0)
       .attr("opacity", 0.3)
-      .attr("fill", d => layers[d.name].color)
+      .attr("fill", d => d.color)
   // layer name
   layerBox.append("text")
       .attr("class", ".layerName")
@@ -210,9 +221,14 @@ function createLineage(nodes, edges, layers) {
       d.y1 = d.y0 + nodeHeight;
       d3.select(this)
         .attr("transform", d => "translate(" + d.x0 + "," + (d.dummy ? d.y0 + spaceBetweenEdges/2 : d.y0) + ")");
+      // update edges
       sankey.update(layout);
       edge.attr("d", sankeyLinkHorizontal());
       edgeRunning.attr("d", sankeyLinkHorizontal());
+      // update layer boxes
+      var layerBoxDef = updateLayerBoxDef();
+      layerBox.attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")")
+      layerBoxRect.attr("height", d => d.y1 - d.y0)
     })
     .on("end", function () {
       d3.select(this).classed("dragging", false);
@@ -227,29 +243,29 @@ function createLineage(nodes, edges, layers) {
       iterateLinkedLinksLeft(node); //Recurse target direction
   }
   function resetNodeLineage(node) {
-      edge.style("stroke", d => d.color ? d.color : "#aaa")
+    edge.style("stroke", d => d.color ? d.color : "#aaa")
   }
   //Select links that have a given source name
   function iterateLinkedLinksRight(pStartNode) {
-      edge.filter((pLinkedLink,i) => pLinkedLink.source.name == pStartNode.name)
-      .style("stroke","LightCoral")
-      .each(iterateLinkedNodesRight);
+    edge.filter((pLinkedLink,i) => pLinkedLink.source.name == pStartNode.name)
+    .style("stroke","LightCoral")
+    .each(iterateLinkedNodesRight);
   }
   //Select nodes that have a given source name
   function iterateLinkedNodesRight(pStartLink) {
-      node.filter((pLinkedNode,i) => pLinkedNode.name == pStartLink.target.name)
-      .each(iterateLinkedLinksRight);
+    node.filter((pLinkedNode,i) => pLinkedNode.name == pStartLink.target.name)
+    .each(iterateLinkedLinksRight);
   }
   //Select links that have a given source name
   function iterateLinkedLinksLeft(pStartNode) {
-      edge.filter((pLinkedLink,i) => pLinkedLink.target.name == pStartNode.name)
-      .style("stroke","LightCoral")
-      .each(iterateLinkedNodesLeft);
+    edge.filter((pLinkedLink,i) => pLinkedLink.target.name == pStartNode.name)
+    .style("stroke","LightCoral")
+    .each(iterateLinkedNodesLeft);
   }
   //Select nodes that have a given source name
   function iterateLinkedNodesLeft(pStartLink) {
-      node.filter((pLinkedNode,i) => pLinkedNode.name == pStartLink.source.name)
-      .each(iterateLinkedLinksLeft);
+    node.filter((pLinkedNode,i) => pLinkedNode.name == pStartLink.source.name)
+    .each(iterateLinkedLinksLeft);
   }
 
   // animate running edges

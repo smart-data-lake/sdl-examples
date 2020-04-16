@@ -1,14 +1,17 @@
-{
-  "src": {
+[
+  {
+    "name": "src",
     "color": "#8E44AD",
     "prio": 1
   },
-  "tgt": {
+  {
+    "name": "tgt",
     "color": "#2471A3",
     "prio": 2
   },
-  "report": {
+  {
+    "name": "report",
     "color": "#5DADE2",
     "prio": 10
   }
-}
+]
