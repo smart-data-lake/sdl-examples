@@ -46,4 +46,4 @@ To programmatically access DataObjects for testing the config or interactive exp
 - install npm package "http-server": `npm install http-server -g`
 - Execute all examples: `mvn clean verify`
   (some of them are exporting the metadata csv-files which are input for the lineage graph) 
-- change to project dir and start "http-server": `npx http-server -c-1 -o src/main/resources/viz/lineage.html`
+- change to project dir and start "http-server": `npx http-server -c-1 -o src/main/viz/lineage.html`
