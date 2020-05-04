@@ -180,7 +180,7 @@ function Sankey() {
   function computeNodeValues({nodes}) {
     for (const node of nodes) {
       node.value = node.fixedValue === undefined
-          ? Math.max(sum(node.sourceLinks, value), sum(node.targetLinks, value))
+          ? Math.max(Math.max(sum(node.sourceLinks, value), sum(node.targetLinks, value)),1)
           : node.fixedValue;
     }
   }
@@ -227,6 +227,7 @@ function Sankey() {
       return nextNodes;
     }
     function processNodes(nodesToProcess, allNodes, layerUpdateFunc) {
+      var dummyCnt = 1;
       nodesToProcess.forEach( function(n) {
         // remove incoming node from targets
         n.sourceLinks.forEach( lSource => lSource.target.incoming.delete(n));
@@ -241,7 +242,7 @@ function Sankey() {
           var dummyDepth = l.source.depth+1
           if (_.some(layersDef, l => l.startDepth <= dummyDepth && (!l.endDepth || dummyDepth <= l.endDepth))) {
             // create new node
-            var dummyNode = {name: "dummy-"+n.name+"-"+(l.source.depth+1), depth: l.source.depth+1, value: l.value, subgraph: n.subgraph, dummy: true};
+            var dummyNode = {name: "dummy-" + dummyCnt++, depth: l.source.depth+1, value: l.value, subgraph: n.subgraph, dummy: true};
             dummyNodes.push(dummyNode);
             // create new link: previous node -> dummy node
             var dummyTargetLink = {source: l.source, target: dummyNode, value: l.value};
@@ -278,9 +279,11 @@ function Sankey() {
     node.subgraph = subgraph;
     nodesToProcess.delete(node);
     var neighbors = neighborMap[node.name];
-    neighbors.forEach( function(n) {
-      if (!n.subgraph) labelSubgraphNode(n, nodesToProcess, neighborMap, subgraph);
-    });
+    if (neighbors) {
+      neighbors.forEach( function(n) {
+        if (!n.subgraph) labelSubgraphNode(n, nodesToProcess, neighborMap, subgraph);
+      });
+    }
   }
   function computeNodeDepths({nodes, links}) {
     // label independent subgraphs

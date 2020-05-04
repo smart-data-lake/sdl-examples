@@ -175,10 +175,13 @@ function createLineage(nodes, edges, layers) {
     var nodesByLayer = _.groupBy(data.nodes.filter( n => n.layerName), n => n.layerName)
     layers.forEach(function (l) {
       var nodes = nodesByLayer[l.name];
-      l.x0 = d3.min(nodes, n => n.x0)-margin;
-      l.x1 = d3.max(nodes, n => n.x1)+margin;
-      l.y0 = d3.min(nodes, n => n.y0)-2*margin;
-      l.y1 = d3.max(nodes, n => n.y1)+margin;
+      if (nodes) {
+        l.x0 = d3.min(nodes, n => n.x0)-margin;
+        l.x1 = d3.max(nodes, n => n.x1)+margin;
+        l.y0 = d3.min(nodes, n => n.y0)-2*margin;
+        l.y1 = d3.max(nodes, n => n.y1)+margin;
+        l.display = true;
+      }
     });
   }
   updateLayerBoxDef();
@@ -186,7 +189,7 @@ function createLineage(nodes, edges, layers) {
     .append("g")
   var layerBox = layerBoxPlane
     .selectAll(".layerBox")
-    .data(layers)
+    .data(layers.filter( l => l.display))
     .join("g")
       .attr("class", "node")
       .attr("transform", d => "translate(" + d.x0 + "," + d.y0 + ")")
