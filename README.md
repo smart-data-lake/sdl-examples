@@ -20,7 +20,7 @@ The following reporting feeds which work with the metadata of the example feeds 
 
 Note: To execute a single example: 
 ```
- mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.DefaultSmartDataLakeBuilder --feed-sel <regex-pattern> --config <path-to-projectdir>/src/main/resources" -Dexec.workingdir="target"
+ mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.LocalSmartDataLakeBuilder --feed-sel <regex-pattern> --config <path-to-projectdir>/src/main/resources" -Dexec.workingdir="target"
 ```
 (requires Maven 3.3.1 or later)
 
@@ -31,7 +31,7 @@ Note: To execute a single example:
    It contains the `global.conf`, `samples.conf` and `reports.conf` configuration files that defines the example feeds.
     
 1. Configure and run the following run configuration in IntelliJ IDEA:
-    - Main class: `io.smartdatalake.app.DefaultSmartDataLakeBuilder`
+    - Main class: `io.smartdatalake.app.LocalSmartDataLakeBuilder`
     - Program arguments: `--feed-sel <regex-feedname-selector> --config $ProjectFileDir$/src/main/resources`
     - Working directory: `/path/to/sdl-examples/target` or just `target`
     - Environment variables: 

@@ -10,7 +10,7 @@ object ProgrammaticAccessDemo extends App {
   val (registry, globalConfig) = ConfigToolbox.loadAndParseConfig(Seq("../src/main/resources"))
 
   // create spark session if not provided by environment
-  implicit val session = globalConfig.createSparkSession("test")
+  implicit val session = globalConfig.createSparkSession("test", Some("local[*]"))
 
   // get data object of the registry
   val dataObject = registry.get[CsvFileDataObject]("ab-csv-org")
