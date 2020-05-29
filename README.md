@@ -15,13 +15,12 @@ The following reporting feeds which work with the metadata of the example feeds 
 
 ## Run with Maven
 1. Set the following environment variable: `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake).
-1. Build the io.smartdatalake:smartdatalake (the main project): `mvn -DskipTests clean install`
 1. Change to the examples project (io.smartdatalake:sdl-examples).
 1. Execute all examples: `mvn clean verify`
 
 Note: To execute a single example: 
 ```
- mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.workflow.DefaultSmartDataLakeBuilder --feed-sel <regex-pattern> --name <app-name>" -Dexec.workingdir="target"
+ mvn clean package exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath io.smartdatalake.app.LocalSmartDataLakeBuilder --feed-sel <regex-pattern> --config <path-to-projectdir>/src/main/resources" -Dexec.workingdir="target"
 ```
 (requires Maven 3.3.1 or later)
 
@@ -32,9 +31,9 @@ Note: To execute a single example:
    It contains the `global.conf`, `samples.conf` and `reports.conf` configuration files that defines the example feeds.
     
 1. Configure and run the following run configuration in IntelliJ IDEA:
-    - Main class: `io.smartdatalake.app.workflow.DefaultSmartDataLakeBuilder`
+    - Main class: `io.smartdatalake.app.LocalSmartDataLakeBuilder`
     - Program arguments: `--feed-sel <regex-feedname-selector> --config $ProjectFileDir$/src/main/resources`
-    - Working directory: `/path/to/sdl-examples/target`
+    - Working directory: `/path/to/sdl-examples/target` or just `target`
     - Environment variables: 
         - `HADOOP_HOME=/path/to/hadoop` (see https://github.com/smart-data-lake/smart-data-lake)
 
