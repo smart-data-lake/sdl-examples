@@ -113,7 +113,7 @@
 							<arguments>
 								<argument>-classpath</argument>
 								<classpath/>
-								<argument>io.smartdatalake.app.DefaultSmartDataLakeBuilder</argument>
+								<argument>io.smartdatalake.app.LocalSmartDataLakeBuilder</argument>
 								<argument>--feed-sel</argument>
 								<argument>.*</argument>
 								<argument>--config</argument>
