@@ -1,0 +1,149 @@
+<!--
+  ~ Smart Data Lake Examples - Build your data lake the smart way.
+  ~
+  ~ Copyright © 2019 ELCA Informatique SA (<https://www.elca.ch>)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.smartdatalake</groupId>
+	<artifactId>smartdatalake-examples</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License (GPL) version 3</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+		</license>
+	</licenses>
+
+	<!-- Used for license header by maven-license-plugin -->
+	<name>Smart Data Lake Examples</name>
+	<description>Build your data lake the smart way.</description>
+	<inceptionYear>2019</inceptionYear>
+	<organization>
+		<name>ELCA Informatique SA</name>
+		<url>https://www.elca.ch</url>
+	</organization>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.release>8</maven.compiler.release>
+		<scala.minor.version>2.11</scala.minor.version>
+		<scala.version>${scala.minor.version}.11</scala.version>
+		<smartdatalake.version>1.0.5</smartdatalake.version>
+	</properties>
+
+	<build>
+		<sourceDirectory>src/main/scala</sourceDirectory>
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
+		<outputDirectory>target</outputDirectory>
+		<plugins>
+			<!-- Compiles Scala sources. -->
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>4.2.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<scalaCompatVersion>${scala.minor.version}</scalaCompatVersion>
+					<args>
+						<arg>-deprecation</arg>
+						<arg>-feature</arg>
+					</args>
+					<jvmArgs>
+						<jvmArg>-Xms64m</jvmArg>
+						<jvmArg>-Xmx1024m</jvmArg>
+					</jvmArgs>
+				</configuration>
+			</plugin>
+
+			<!-- Copies files in resources folders to target folder. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Executes examples -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<id>all</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<arguments>
+								<argument>-classpath</argument>
+								<classpath/>
+								<argument>io.smartdatalake.app.LocalSmartDataLakeBuilder</argument>
+								<argument>--feed-sel</argument>
+								<argument>.*</argument>
+								<argument>--config</argument>
+								<argument>${project.build.directory}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>java</executable>
+					<workingDirectory>${project.build.directory}</workingDirectory>
+					<environmentVariables>
+						<SDL_LOCAL_MODE>true</SDL_LOCAL_MODE>
+						<SDL_SPARK_MASTER_URL>local[*]</SDL_SPARK_MASTER_URL>
+						<SDL_SPARK_DEPLOY_MODE>client</SDL_SPARK_DEPLOY_MODE>
+						<SDL_KERBEROS_USER>John</SDL_KERBEROS_USER>
+						<SDL_KERBEROS_DOMAIN>EXAMPLE.org</SDL_KERBEROS_DOMAIN>
+						<SDL_KEYTAB_PATH>empty.keytab</SDL_KEYTAB_PATH>
+					</environmentVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.smartdatalake</groupId>
+			<artifactId>smartdatalake_${scala.minor.version}</artifactId>
+			<version>${smartdatalake.version}</version>
+		</dependency>
+	</dependencies>
+
+</project>
