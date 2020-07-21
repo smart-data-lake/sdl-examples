@@ -2,6 +2,7 @@ metastore_db
 data/output
 .cache-*
 target
+venv
 /.externalToolBuilders/
 derby.log
 *.log
