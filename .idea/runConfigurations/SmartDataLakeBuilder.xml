@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SmartDataLakeBuilder" type="Application" factoryName="Application">
+    <envs>
+      <env name="PYTHONPATH" value="../venv/Lib/site-packages" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.LocalSmartDataLakeBuilder" />
     <module name="sdl-examples" />
     <option name="PROGRAM_PARAMETERS" value="-f .* -c $ProjectFileDir$/src/main/resources" />
