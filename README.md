@@ -53,4 +53,4 @@ In IntelliJ this can be achieved by the following steps:
 1. Make sure your "Run Configuration" has set environment variable  "PYTHONPATH" to "../venv/Lib/site-packages" (assuming that working dir is set to "target" and virtualenv is installed to <projectdir>/venv)
 
 Now you should be able to run feed ab-python-transform.
-Note that if there are problems with the python transform there is an exception, but the real python execution error is written some lines above in the logs.
+Note that if there are problems with the python transform there is an PythonTransformationException thrown, but the real python execution error is written some lines above in the logs/stdout.
