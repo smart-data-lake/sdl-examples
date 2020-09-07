@@ -35,6 +35,10 @@
 
 	<name>Smart Data Lake Examples</name>
 
+	<properties>
+		<log4j2.version>2.11.2</log4j2.version>
+	</properties>
+
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
 		<outputDirectory>target</outputDirectory>
@@ -49,6 +53,30 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+
+			<!-- Creates the jar without dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<!-- Builds executable fat-jar that includes all dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+			</plugin>
+
+			<!-- Checks for declared but unused and undeclared but used dependencies in the verify stage -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+
+			<!-- check for dependency version conflicts -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
 			</plugin>
 
 			<!-- Executes examples -->
@@ -85,11 +113,60 @@
 	</build>
 
 	<dependencies>
+
+		<!-- smartdatalakebuilder without log4j1.2 -->
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-core_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
+		<!-- log4j2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api-scala_${scala.minor.version}</artifactId>
+			<version>11.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- route log4j1.2 over over slf4j to log4j2 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
 	</dependencies>
 
 </project>
