@@ -1,0 +1,4 @@
+pandas>=0.19.1
+pypandoc
+pyspark==2.4.4
+pyspark-stubs==2.4.0.post8
