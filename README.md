@@ -47,10 +47,12 @@ To programmatically access DataObjects for testing the config or interactive exp
 To run feed ab-python-transform you need to install Python and PySpark.
 In IntelliJ this can be achieved by the following steps:
 1. Download and install python version 3.7. Note that version 3.8 only works from spark 3.0 (SPARK-29536).
+1. Install IntelliJ Python plugin.
 1. Configure additional Python SDK as "Virtualenv Environment" in "Project Structure". Install to directory <projectdir>/venv.
 1. Configure additional Module "Python Interpreter" module in "Project Structure".
 1. Open requirements.txt in project root dir. IntelliJ should now download and install python packages to virtualenv.
-1. Make sure your "Run Configuration" has set environment variable  "PYTHONPATH" to "../venv/Lib/site-packages" (assuming that working dir is set to "target" and virtualenv is installed to <projectdir>/venv)
+1. Make sure your "Run Configuration" has set environment variable "PYTHONPATH" to "<projectdir>/venv/Lib/site-packages" (assuming virtualenv is installed to <projectdir>/venv).
+1. Make sure your "Run Configuration" has extended environment variable "PATH" to "<projectdir>/venv/Scripts;$PATH$" in order to use the right Python binary version. 
 
 Now you should be able to run feed ab-python-transform.
 Note that if there are problems with the python transform there is an PythonTransformationException thrown, but the real python execution error is written some lines above in the logs/stdout.
