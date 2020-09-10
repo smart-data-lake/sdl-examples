@@ -2,10 +2,15 @@
 <Configuration status="INFO">
     <Appenders>
         <Console name="stdout" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %p %c{1}:%L - %msg%n [%t]" />
+            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %p %c{1}:%L - %m [%t]%n" />
         </Console>
     </Appenders>
     <Loggers>
+
+        <Root level="info">
+            <AppenderRef ref="stdout"/>
+        </Root>
+
         <!-- debug -->
         <Logger name="io.smartdatalake.workflow.ActionDAG" level="debug" />
 
@@ -22,8 +27,6 @@
         <Logger name="org.apache.spark.storage.ShuffleBlockFetcherIterator" level="warn" />
         <Logger name="org.apache.spark.ContextCleaner" level="warn" />
         <Logger name="org.apache.spark.sql.execution.command.DropTableCommand" level="warn" />
-        <Root>
-            <AppenderRef ref="stdout" level="info" />
-        </Root>
+
     </Loggers>
 </Configuration>
