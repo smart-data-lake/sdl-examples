@@ -40,6 +40,40 @@
 		<url>https://www.elca.ch</url>
 	</organization>
 
+	<profiles>
+		<profile>
+			<id>fat-jar</id>
+			<properties>
+				<skip.assembly>false</skip.assembly>
+				<scala.deps.scope>provided</scala.deps.scope>
+				<spark.deps.scope>provided</spark.deps.scope>
+			</properties>
+		</profile>
+		<profile>
+			<id>fat-jar-with-spark</id>
+			<properties>
+				<skip.assembly>false</skip.assembly>
+				<scala.deps.scope>compile</scala.deps.scope>
+				<spark.deps.scope>compile</spark.deps.scope>
+			</properties>
+		</profile>
+		<profile>
+			<id>scala-2.12</id>
+			<properties>
+				<scala.minor.version>2.12</scala.minor.version>
+				<scala.version>${scala.minor.version}.10</scala.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>scala-2.11</id>
+			<activation><activeByDefault>true</activeByDefault></activation>
+			<properties>
+				<scala.minor.version>2.11</scala.minor.version>
+				<scala.version>${scala.minor.version}.12</scala.version>
+			</properties>
+		</profile>
+	</profiles>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -49,6 +83,7 @@
 		<scala.minor.version>2.11</scala.minor.version>
 		<scala.version>${scala.minor.version}.11</scala.version>
 		<smartdatalake.version>1.1.1</smartdatalake.version>
+		<skip.assembly>true</skip.assembly>
 	</properties>
 
 	<build>
@@ -92,6 +127,36 @@
 						<phase>process-resources</phase>
 						<goals>
 							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Builds executable fat-jar that includes all dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>io.smartdatalake.app.LocalSmartDataLakeBuilder</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${project.version}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+					<skipAssembly>${skip.assembly}</skipAssembly>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
