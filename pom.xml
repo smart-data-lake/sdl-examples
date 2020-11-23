@@ -28,7 +28,7 @@
 		<groupId>io.smartdatalake</groupId>
 		<artifactId>sdl-parent</artifactId>
 		<!-- set the smartdatalake version to use here -->
-		<version>1.1.1-SNAPSHOT</version>
+		<version>1.2.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sdl-examples</artifactId>
@@ -37,6 +37,13 @@
 
 	<properties>
 		<log4j2.version>2.11.2</log4j2.version>
+		<scala.deps.scope>provided</scala.deps.scope>
+		<spark.deps.scope>provided</spark.deps.scope>
+		<hadoop.deps.scope>provided</hadoop.deps.scope>
+		<flume.deps.scope>provided</flume.deps.scope>
+		<hive.deps.scope>provided</hive.deps.scope>
+		<orc.deps.scope>provided</orc.deps.scope>
+		<parquet.deps.scope>provided</parquet.deps.scope>
 	</properties>
 
 	<build>
@@ -59,12 +66,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-
-			<!-- Builds executable fat-jar that includes all dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 
 			<!-- Checks for declared but unused and undeclared but used dependencies in the verify stage -->
@@ -169,6 +170,39 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>1.7.25</version>
+		</dependency>
+
+		<!-- override scope for spark dependencies to include/exclude them correctly for the fat-jar -->
+		<!-- note that the corresponding profile defining spark.deps.scope is inherited from sdl-parent -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-hive_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-catalyst_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-avro_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
 		</dependency>
 
 	</dependencies>
