@@ -19,82 +19,58 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.smartdatalake</groupId>
-	<artifactId>smartdatalake-examples</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<!--
+	  By setting sdl-parent as parent you get proper dependency management for Spark and predefined plugin management
+	  Alternatively you could import Spark dependency management from sdl-parent with scope=import (or also directly from spark-parent),
+	  and need to copy all version properties from sdl-parent.pom into this pom.
+	-->
+	<parent>
+		<groupId>io.smartdatalake</groupId>
+		<artifactId>sdl-parent</artifactId>
+		<!-- set the smartdatalake version to use here -->
+		<version>2.0.0</version>
+	</parent>
 
-	<licenses>
-		<license>
-			<name>GNU General Public License (GPL) version 3</name>
-			<url>https://www.gnu.org/licenses/gpl-3.0.html</url>
-		</license>
-	</licenses>
+	<artifactId>sdl-examples</artifactId>
 
-	<!-- Used for license header by maven-license-plugin -->
 	<name>Smart Data Lake Examples</name>
-	<description>Build your data lake the smart way.</description>
-	<inceptionYear>2019</inceptionYear>
-	<organization>
-		<name>ELCA Informatique SA</name>
-		<url>https://www.elca.ch</url>
-	</organization>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.release>8</maven.compiler.release>
-		<scala.minor.version>2.11</scala.minor.version>
-		<scala.version>${scala.minor.version}.11</scala.version>
-		<smartdatalake.version>1.1.1</smartdatalake.version>
+		<log4j2.version>2.11.2</log4j2.version>
 	</properties>
 
 	<build>
 		<sourceDirectory>src/main/scala</sourceDirectory>
-		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<outputDirectory>target</outputDirectory>
 		<plugins>
 			<!-- Compiles Scala sources. -->
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
-				<version>4.2.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<scalaCompatVersion>${scala.minor.version}</scalaCompatVersion>
-					<args>
-						<arg>-deprecation</arg>
-						<arg>-feature</arg>
-					</args>
-					<jvmArgs>
-						<jvmArg>-Xms64m</jvmArg>
-						<jvmArg>-Xmx1024m</jvmArg>
-					</jvmArgs>
-				</configuration>
 			</plugin>
 
 			<!-- Copies files in resources folders to target folder. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>resources</goal>
-						</goals>
-					</execution>
-				</executions>
+			</plugin>
+
+			<!-- Creates the jar without dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+
+			<!-- Checks for declared but unused and undeclared but used dependencies in the verify stage -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+
+			<!-- check for dependency version conflicts -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
 			</plugin>
 
 			<!-- Executes examples -->
@@ -125,25 +101,115 @@
 				<configuration>
 					<executable>java</executable>
 					<workingDirectory>${project.build.directory}</workingDirectory>
-					<environmentVariables>
-						<SDL_LOCAL_MODE>true</SDL_LOCAL_MODE>
-						<SDL_SPARK_MASTER_URL>local[*]</SDL_SPARK_MASTER_URL>
-						<SDL_SPARK_DEPLOY_MODE>client</SDL_SPARK_DEPLOY_MODE>
-						<SDL_KERBEROS_USER>John</SDL_KERBEROS_USER>
-						<SDL_KERBEROS_DOMAIN>EXAMPLE.org</SDL_KERBEROS_DOMAIN>
-						<SDL_KEYTAB_PATH>empty.keytab</SDL_KEYTAB_PATH>
-					</environmentVariables>
 				</configuration>
 			</plugin>
+
+			<!-- disable sign artifacts with gpg -->
+			<!-- TODO: move to profile in sdl-parent pom -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
 	<dependencies>
+
+		<!-- smartdatalakebuilder without log4j1.2 -->
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
-			<artifactId>smartdatalake_${scala.minor.version}</artifactId>
-			<version>${smartdatalake.version}</version>
+			<artifactId>sdl-core_${scala.minor.version}</artifactId>
+			<version>${project.parent.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>apache-log4j-extras</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+
+		<!-- log4j2 -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api-scala_${scala.minor.version}</artifactId>
+			<version>11.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${log4j2.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- route log4j1.2 over over slf4j to log4j2 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<!-- override scope for spark dependencies to include/exclude them correctly for the fat-jar -->
+		<!-- note that the corresponding profile defining spark.deps.scope is inherited from sdl-parent -->
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-hive_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-catalyst_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-avro_${scala.minor.version}</artifactId>
+			<version>${spark.version}</version>
+			<scope>${spark.deps.scope}</scope>
+		</dependency>
+
 	</dependencies>
 
 </project>

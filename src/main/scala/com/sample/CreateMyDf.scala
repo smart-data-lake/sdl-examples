@@ -1,12 +1,10 @@
 package com.sample
 
 import io.smartdatalake.workflow.action.customlogic.CustomDfCreator
+import org.apache.logging.log4j.scala.Logging
 import org.apache.spark.sql.{DataFrame, SparkSession}
-import org.slf4j.LoggerFactory
 
-class CreateMyDf extends CustomDfCreator {
-  private val logger = LoggerFactory.getLogger(this.getClass)
-
+class CreateMyDf extends CustomDfCreator with Logging {
   def exec(session: SparkSession, config: Map[String, String]): DataFrame = {
     import session.implicits._
 

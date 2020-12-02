@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %p %c{1}:%L - %m [%t]%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+
+        <Root level="info">
+            <AppenderRef ref="stdout"/>
+        </Root>
+
+        <!-- debug -->
+        <Logger name="io.smartdatalake.workflow.ActionDAG" level="debug" />
+
+        <!-- too verbose -->
+        <Logger name="org.apache.spark.sql.catalyst.parser.CatalystSqlParser" level="warn" />
+        <Logger name="org.spark_project.jetty.server.handler.ContextHandler" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.datasources.parquet.ParquetWriteSupport" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.datasources.parquet.ParquetReadSupport" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.FileSourceScanExec" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.datasources.FileSourceStrategy" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.aggregate.HashAggregateExec" level="warn" />
+        <Logger name="org.apache.spark.sql.catalyst.expressions.codegen" level="warn" />
+        <Logger name="org.apache.spark.storage.memory.MemoryStore" level="warn" />
+        <Logger name="org.apache.spark.storage.ShuffleBlockFetcherIterator" level="warn" />
+        <Logger name="org.apache.spark.ContextCleaner" level="warn" />
+        <Logger name="org.apache.spark.sql.execution.command.DropTableCommand" level="warn" />
+
+    </Loggers>
+</Configuration>
