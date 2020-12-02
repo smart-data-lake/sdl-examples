@@ -36,7 +36,7 @@
 	<name>Smart Data Lake Examples</name>
 
 	<properties>
-		<log4j2.version>2.11.2</log4j2.version>
+		<log4j2.version>2.14.0</log4j2.version>
 	</properties>
 
 	<build>
