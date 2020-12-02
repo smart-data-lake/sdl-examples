@@ -103,6 +103,18 @@
 					<workingDirectory>${project.build.directory}</workingDirectory>
 				</configuration>
 			</plugin>
+
+			<!-- disable sign artifacts with gpg -->
+			<!-- TODO: move to profile in sdl-parent pom -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.6</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
