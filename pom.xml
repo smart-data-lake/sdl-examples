@@ -150,7 +150,7 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api-scala_${scala.minor.version}</artifactId>
-			<version>11.0</version>
+			<version>12.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.logging.log4j</groupId>
@@ -174,7 +174,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.25</version>
+			<version>1.7.30</version>
 		</dependency>
 
 		<!-- override scope for spark dependencies to include/exclude them correctly for the fat-jar -->
@@ -184,6 +184,20 @@
 			<artifactId>spark-core_${scala.minor.version}</artifactId>
 			<version>${spark.version}</version>
 			<scope>${spark.deps.scope}</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>apache-log4j-extras</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
