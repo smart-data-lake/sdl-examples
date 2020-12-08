@@ -27,8 +27,11 @@
 	<parent>
 		<groupId>io.smartdatalake</groupId>
 		<artifactId>sdl-parent</artifactId>
-		<!-- set the smartdatalake version to use here -->
-		<version>2.0.0</version>
+		<!--
+		  Set the smartdatalake version to use here.
+		  If version cannot be resolved, make sure maven central repository is defined in settings.xml and the corresponding profile activated.
+		-->
+		<version>2.0.1</version>
 	</parent>
 
 	<artifactId>sdl-examples</artifactId>
@@ -37,6 +40,9 @@
 
 	<properties>
 		<log4j2.version>2.14.0</log4j2.version>
+		<!-- default scala version - use predefined maven profiles to override -->
+		<scala.minor.version>2.12</scala.minor.version>
+		<scala.version>${scala.minor.version}.12</scala.version>
 	</properties>
 
 	<build>
