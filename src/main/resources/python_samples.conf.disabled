@@ -1,0 +1,96 @@
+#
+# Smart Data Lake - Build your data lake the smart way.
+#
+# Copyright © 2019 ELCA Informatique SA (<https://www.elca.ch>)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+
+global {
+  pythonUDFs {
+    // this is a pandas "vectorized" spark udf, which is good for performance.
+    udfMultiply {
+      pythonCode = """
+        |import pandas as pd
+        |from pyspark.sql.functions import pandas_udf
+        |multiplier = int(options["multiplier"])
+        |@pandas_udf("long")
+        |def udfMultiply(a: pd.Series) -> pd.Series:
+        |  return a * multiplier
+      """
+      options = {
+        multiplier = 2
+      }
+    }
+  }
+}
+
+dataObjects {
+
+  ab-python-transformed-csv-hadoop {
+    type = CsvFileDataObject
+    path = "~{id}"
+    csv-options = {
+      delimiter = ","
+      escape = "\\"
+      header = "true"
+      quote = "\""
+    }
+    sparkRepartition { numberOfTasksPerPartition = 1, filename = result.csv }
+  }
+
+  ab-python-transformed-csv-hadoop2 {
+    type = CsvFileDataObject
+    path = "~{id}"
+    csv-options = {
+      delimiter = ","
+      escape = "\\"
+      header = "true"
+      quote = "\""
+    }
+    sparkRepartition { numberOfTasksPerPartition = 1, filename = result.csv }
+  }
+
+}
+
+actions {
+
+  loadTransformedWithPython {
+    type = CopyAction
+    inputId = ab-csv-org
+    outputId = ab-python-transformed-csv-hadoop
+    transformer.pythonCode = """
+      |from pyspark.sql.functions import *
+      |udf_multiply = udf(lambda x, y: x * y, "int")
+      |df2 = inputDf.select(col("id"), col("name"), col("host_id"), col("number_of_reviews"))\
+      |  .where(col("neighbourhood_group") == "Manhattan")\
+      |  .withColumn("test", udf_multiply(col("number_of_reviews").cast("int"), lit(2)))
+      |setOutputDf(df2)
+    """
+    metadata {
+      feed = ab-python-transform
+    }
+  }
+
+  loadTransformedWithPythonUdf {
+    type = CopyAction
+    inputId = ab-csv-org
+    outputId = ab-python-transformed-csv-hadoop2
+    transformer.sqlCode = "select id,name,host_id,number_of_reviews,udfMultiply(int(number_of_reviews)) as test from ab_csv_org"
+    metadata {
+      feed = ab-python-udf
+    }
+  }
+
+}

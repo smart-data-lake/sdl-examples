@@ -53,6 +53,11 @@ In IntelliJ this can be achieved by the following steps:
 1. Open requirements.txt in project root dir. IntelliJ should now download and install python packages to virtualenv.
 1. Make sure your "Run Configuration" has set environment variable "PYTHONPATH" to "<projectdir>/venv/Lib/site-packages" (assuming virtualenv is installed to <projectdir>/venv).
 1. Make sure your "Run Configuration" has extended environment variable "PATH" to "<projectdir>/venv/Scripts;$PATH$" in order to use the right Python binary version. 
+1. Rename src/main/resources/python_samples.conf.disable -> python_samples.conf
 
-Now you should be able to run feed ab-python-transform.
+Now you should be able to run feed `ab-python-.*`.
 Note that if there are problems with the python transform there is an PythonTransformationException thrown, but the real python execution error is written some lines above in the logs/stdout.
+
+Troubleshooting:
+- "Cannot run program "python3": CreateProcess error=2, The system cannot find the file specified;"
+  - Set environment variable "PYSPARK_PYTHON=python" in run configuration
