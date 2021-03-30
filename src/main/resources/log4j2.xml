@@ -27,6 +27,10 @@
         <Logger name="org.apache.spark.storage.ShuffleBlockFetcherIterator" level="warn" />
         <Logger name="org.apache.spark.ContextCleaner" level="warn" />
         <Logger name="org.apache.spark.sql.execution.command.DropTableCommand" level="warn" />
+        <!--spark2-->
+        <Logger name="org.spark_project.jetty.server.handler.ContextHandler" level="warn" />
+        <!--spark3-->
+        <Logger name="org.sparkproject.jetty" level="warn" />
 
     </Loggers>
 </Configuration>
