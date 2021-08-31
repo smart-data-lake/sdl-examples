@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="SmartDataLakeBuilder" type="Application" factoryName="Application">
     <envs>
+      <env name="PYSPARK_PYTHON" value="python" />
       <env name="PYTHONPATH" value="../venv/Lib/site-packages" />
       <env name="PATH" value="../venv/Scripts;$PATH$" />
     </envs>
@@ -8,6 +9,7 @@
     <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.LocalSmartDataLakeBuilder" />
     <module name="sdl-examples" />
     <option name="PROGRAM_PARAMETERS" value="-f .* -c $ProjectFileDir$/src/main/resources" />
+    <option name="VM_PARAMETERS" value="-Dio.netty.tryReflectionSetAccessible=true" />
     <option name="WORKING_DIRECTORY" value="target" />
     <method v="2">
       <option name="Make" enabled="true" />
