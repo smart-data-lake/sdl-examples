@@ -32,7 +32,7 @@
 		  If version cannot be resolved, make sure maven central repository is defined in settings.xml and the corresponding profile activated.
 		  If version in IntelliJ still cannot be resolved, a restart of IntelliJ might help!
 		-->
-		<version>2.1.1-SNAPSHOT</version>
+		<version>2.5.2</version>
 	</parent>
 
 	<artifactId>sdl-examples</artifactId>
@@ -40,7 +40,6 @@
 	<name>Smart Data Lake Examples</name>
 
 	<properties>
-		<log4j2.version>2.17.1</log4j2.version>
 		<!-- default scala version - use predefined maven profiles to override -->
 		<scala.minor.version>2.12</scala.minor.version>
 		<scala.version>${scala.minor.version}.12</scala.version>
@@ -104,6 +103,8 @@
 						</goals>
 						<configuration>
 							<arguments>
+								<argument>--add-exports</argument>
+								<argument>java.base/sun.nio.ch=ALL-UNNAMED</argument>
 								<argument>-classpath</argument>
 								<classpath/>
 								<argument>io.smartdatalake.app.LocalSmartDataLakeBuilder</argument>
@@ -142,32 +143,12 @@
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-core_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>apache-log4j-extras</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-core_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
 			<classifier>test-jar</classifier>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
@@ -175,34 +156,6 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
-		<!-- log4j2 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api-scala_${scala.minor.version}</artifactId>
-			<version>12.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j2.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 		<!-- route log4j1.2 over over slf4j to log4j2 -->
 		<dependency>
@@ -218,20 +171,6 @@
 			<artifactId>spark-core_${scala.minor.version}</artifactId>
 			<version>${spark.version}</version>
 			<scope>${spark.deps.scope}</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>apache-log4j-extras</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>

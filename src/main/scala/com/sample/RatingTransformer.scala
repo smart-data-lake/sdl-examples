@@ -1,6 +1,6 @@
 package com.sample
 
-import io.smartdatalake.workflow.action.customlogic.CustomDfsTransformer
+import io.smartdatalake.workflow.action.spark.customlogic.CustomDfsTransformer
 import org.apache.spark.sql.functions.sum
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
