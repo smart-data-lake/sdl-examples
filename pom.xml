@@ -46,8 +46,8 @@
 		<!-- must match Python arrow version defined in requirements.txt -->
 		<!-- see also sdl-parent pom.xml for arrow version that spark is built against -->
 		<arrow.version>7.0.0</arrow.version>
-		<!-- additional cmd line properties for java 17, set through automatically through profile jvm17 -->
-		<jvm17.opens></jvm17.opens>
+		<!-- additional java cmd line properties for java 17, set automatically through profile jvm17, otherwise dummy value stays -->
+		<jvm17.opens>-Ddummy</jvm17.opens>
 	</properties>
 
 	<profiles>
