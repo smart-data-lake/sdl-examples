@@ -42,9 +42,10 @@
 	<properties>
 		<!-- default scala version - use predefined maven profiles to override -->
 		<scala.minor.version>2.12</scala.minor.version>
-		<scala.version>${scala.minor.version}.12</scala.version>
+		<scala.version>${scala.minor.version}.18</scala.version>
 		<!-- must match Python arrow version defined in requirements.txt -->
-		<arrow.version>2.0.0</arrow.version>
+		<!-- see also sdl-parent pom.xml for arrow version that spark is built against -->
+		<arrow.version>7.0.0</arrow.version>
 	</properties>
 
 	<repositories>
@@ -93,7 +94,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>all</id>
@@ -122,46 +123,21 @@
 				</configuration>
 			</plugin>
 
-			<!-- disable sign artifacts with gpg -->
-			<!-- TODO: move to profile in sdl-parent pom -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 
 	<dependencies>
 
-		<!-- smartdatalakebuilder without log4j1.2 -->
+		<!-- smartdatalakebuilder -->
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-core_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.smartdatalake</groupId>
-			<artifactId>sdl-core_${scala.minor.version}</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>test-jar</classifier>
 		</dependency>
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-deltalake_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
-		</dependency>
-
-
-		<!-- route log4j1.2 over over slf4j to log4j2 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.30</version>
 		</dependency>
 
 		<!-- override scope for spark dependencies to include/exclude them correctly for the fat-jar -->
@@ -195,6 +171,14 @@
 			<artifactId>spark-avro_${scala.minor.version}</artifactId>
 			<version>${spark.version}</version>
 			<scope>${spark.deps.scope}</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.smartdatalake</groupId>
+			<artifactId>sdl-core_${scala.minor.version}</artifactId>
+			<version>${project.parent.version}</version>
+			<classifier>test-jar</classifier>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
