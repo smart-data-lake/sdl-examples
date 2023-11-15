@@ -46,7 +46,21 @@
 		<!-- must match Python arrow version defined in requirements.txt -->
 		<!-- see also sdl-parent pom.xml for arrow version that spark is built against -->
 		<arrow.version>7.0.0</arrow.version>
+		<!-- additional cmd line properties for java 17, set through automatically through profile jvm17 -->
+		<jvm17.opens></jvm17.opens>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>jdk17</id>
+			<activation>
+				<jdk>[17, ]</jdk>
+			</activation>
+			<properties>
+				<jvm17.opens>--add-opens=java.base/sun.nio.ch=ALL-UNNAMED</jvm17.opens>
+			</properties>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
@@ -104,8 +118,7 @@
 						</goals>
 						<configuration>
 							<arguments>
-								<argument>--add-opens</argument>
-								<argument>java.base/sun.nio.ch=ALL-UNNAMED</argument>
+								<argument>${jvm17.opens}</argument>
 								<argument>-classpath</argument>
 								<classpath/>
 								<argument>io.smartdatalake.app.LocalSmartDataLakeBuilder</argument>
