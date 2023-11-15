@@ -104,7 +104,7 @@
 						</goals>
 						<configuration>
 							<arguments>
-								<argument>--add-exports</argument>
+								<argument>--add-opens</argument>
 								<argument>java.base/sun.nio.ch=ALL-UNNAMED</argument>
 								<argument>-classpath</argument>
 								<classpath/>
