@@ -1,4 +1,4 @@
 pandas>=0.19.1
 pypandoc
 pyspark==3.3.2
-pyarrow==7.0.0
+pyarrow==14.0.1
