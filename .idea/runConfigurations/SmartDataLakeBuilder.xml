@@ -3,13 +3,13 @@
     <envs>
       <env name="PYSPARK_PYTHON" value="python" />
       <env name="PYTHONPATH" value="../venv/Lib/site-packages" />
-      <env name="PATH" value="../venv/Scripts;$PATH$" />
+      <env name="PATH" value="../venv/Scripts;$Path$" />
     </envs>
     <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="io.smartdatalake.app.LocalSmartDataLakeBuilder" />
     <module name="sdl-examples" />
     <option name="PROGRAM_PARAMETERS" value="-f .* -c $ProjectFileDir$/src/main/resources" />
-    <option name="VM_PARAMETERS" value="-Dio.netty.tryReflectionSetAccessible=true" />
+    <option name="VM_PARAMETERS" value="-Dio.netty.tryReflectionSetAccessible=true --add-opens=java.base/sun.nio.ch=ALL-UNNAMED" />
     <option name="WORKING_DIRECTORY" value="target" />
     <method v="2">
       <option name="Make" enabled="true" />

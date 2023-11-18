@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProgrammaticAccessDemo" type="Application" factoryName="Application">
     <envs>
+      <env name="PATH" value="../venv/Scripts;$Path$" />
       <env name="PYSPARK_PYTHON" value="python" />
       <env name="PYTHONPATH" value="../venv/Lib/site-packages" />
-      <env name="PATH" value="../venv/Scripts;$PATH$" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.sample.ProgrammaticAccessDemo" />
     <module name="sdl-examples" />

@@ -1,6 +1,6 @@
 package com.sample
 
-import io.smartdatalake.workflow.action.customlogic.CustomDfTransformer
+import io.smartdatalake.workflow.action.spark.customlogic.CustomDfTransformer
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
 class ReduceNycCSVTransformer extends CustomDfTransformer {

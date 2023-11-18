@@ -32,7 +32,7 @@
 		  If version cannot be resolved, make sure maven central repository is defined in settings.xml and the corresponding profile activated.
 		  If version in IntelliJ still cannot be resolved, a restart of IntelliJ might help!
 		-->
-		<version>2.1.1-SNAPSHOT</version>
+		<version>2.5.2</version>
 	</parent>
 
 	<artifactId>sdl-examples</artifactId>
@@ -40,13 +40,27 @@
 	<name>Smart Data Lake Examples</name>
 
 	<properties>
-		<log4j2.version>2.17.1</log4j2.version>
 		<!-- default scala version - use predefined maven profiles to override -->
 		<scala.minor.version>2.12</scala.minor.version>
-		<scala.version>${scala.minor.version}.12</scala.version>
+		<scala.version>${scala.minor.version}.18</scala.version>
 		<!-- must match Python arrow version defined in requirements.txt -->
-		<arrow.version>2.0.0</arrow.version>
+		<!-- see also sdl-parent pom.xml for arrow version that spark is built against -->
+		<arrow.version>7.0.0</arrow.version>
+		<!-- additional java cmd line properties for java 17, set automatically through profile jvm17, otherwise dummy value stays -->
+		<jvm17.opens>-Ddummy</jvm17.opens>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>jdk17</id>
+			<activation>
+				<jdk>[17, ]</jdk>
+			</activation>
+			<properties>
+				<jvm17.opens>--add-opens=java.base/sun.nio.ch=ALL-UNNAMED</jvm17.opens>
+			</properties>
+		</profile>
+	</profiles>
 
 	<repositories>
 		<repository>
@@ -94,7 +108,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>all</id>
@@ -104,6 +118,7 @@
 						</goals>
 						<configuration>
 							<arguments>
+								<argument>${jvm17.opens}</argument>
 								<argument>-classpath</argument>
 								<classpath/>
 								<argument>io.smartdatalake.app.LocalSmartDataLakeBuilder</argument>
@@ -121,94 +136,21 @@
 				</configuration>
 			</plugin>
 
-			<!-- disable sign artifacts with gpg -->
-			<!-- TODO: move to profile in sdl-parent pom -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 
 	<dependencies>
 
-		<!-- smartdatalakebuilder without log4j1.2 -->
+		<!-- smartdatalakebuilder -->
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-core_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>apache-log4j-extras</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.smartdatalake</groupId>
-			<artifactId>sdl-core_${scala.minor.version}</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>test-jar</classifier>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.smartdatalake</groupId>
 			<artifactId>sdl-deltalake_${scala.minor.version}</artifactId>
 			<version>${project.parent.version}</version>
-		</dependency>
-
-		<!-- log4j2 -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${log4j2.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api-scala_${scala.minor.version}</artifactId>
-			<version>12.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-slf4j-impl</artifactId>
-			<version>${log4j2.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- route log4j1.2 over over slf4j to log4j2 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.30</version>
 		</dependency>
 
 		<!-- override scope for spark dependencies to include/exclude them correctly for the fat-jar -->
@@ -218,20 +160,6 @@
 			<artifactId>spark-core_${scala.minor.version}</artifactId>
 			<version>${spark.version}</version>
 			<scope>${spark.deps.scope}</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>apache-log4j-extras</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.spark</groupId>
@@ -256,6 +184,14 @@
 			<artifactId>spark-avro_${scala.minor.version}</artifactId>
 			<version>${spark.version}</version>
 			<scope>${spark.deps.scope}</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.smartdatalake</groupId>
+			<artifactId>sdl-core_${scala.minor.version}</artifactId>
+			<version>${project.parent.version}</version>
+			<classifier>test-jar</classifier>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
