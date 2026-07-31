@@ -123,7 +123,7 @@
 								<argument>--feed-sel</argument>
 								<argument>.*</argument>
 								<argument>--config</argument>
-								<argument>${project.build.directory}</argument>
+								<argument>${project.basedir}/config,${project.basedir}/envConfig/dev.conf</argument>
 							</arguments>
 						</configuration>
 					</execution>
