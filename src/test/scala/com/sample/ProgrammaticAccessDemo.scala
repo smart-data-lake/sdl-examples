@@ -2,20 +2,21 @@ package com.sample
 
 import io.smartdatalake.config.SdlConfigObject.stringToDataObjectId
 import io.smartdatalake.config.ConfigToolbox
-import io.smartdatalake.testutils.TestUtil
 import io.smartdatalake.workflow.ActionPipelineContext
-import io.smartdatalake.workflow.dataobject.{CsvFileDataObject, ParquetFileDataObject}
+import io.smartdatalake.workflow.dataframe.spark.SparkSubFeed
+import io.smartdatalake.workflow.dataobject.CsvFileDataObject
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
 
 object ProgrammaticAccessDemo extends App {
 
   // get config objects
-  val (registry, globalConfig) = ConfigToolbox.loadAndParseConfig(Seq("../src/main/resources"))
+  val (registry, globalConfig) = ConfigToolbox.loadAndParseConfig(Seq("../config", "../envConfig/dev.conf"))
 
-  // create spark session if not provided by environment
-  implicit val session: SparkSession = globalConfig.sparkSession("test", Some("local[*]"))
-  implicit val context: ActionPipelineContext = ConfigToolbox.getDefaultActionPipelineContext(session, registry)
+  implicit val context: ActionPipelineContext = ConfigToolbox.getDefaultActionPipelineContext(registry)
+
+  // since SDLB 3.0.0 the spark session comes from the "default-engine" SparkClassicConnection
+  // defined in config/global.conf
+  implicit val session: SparkSession = SparkSubFeed.getSparkSession
   import session.implicits._
 
   // get data object of the registry
